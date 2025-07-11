@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import FileUpload from '../components/FileUpload';
+import ProductList from '../components/ProductList';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -106,78 +107,10 @@ export default function Home() {
             </div>
           )}
 
-          {/* 产品预览 */}
+          {/* 产品展示 */}
           {products.length > 0 && (
-            <div className="max-w-6xl mx-auto">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  产品预览 (前5个产品)
-                </h2>
-                <div className="space-y-4">
-                  {products.slice(0, 5).map((product, index) => (
-                    <div key={index} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                      <div className="flex flex-col md:flex-row gap-4">
-                        {/* 产品图片 */}
-                        <div className="flex-shrink-0">
-                          {product.mainImage ? (
-                            <img
-                              src={product.mainImage}
-                              alt={product.title}
-                              className="w-24 h-24 object-cover rounded-lg"
-                              onError={(e) => {
-                                e.target.src = '/placeholder-image.png';
-                              }}
-                            />
-                          ) : (
-                            <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
-                              <span className="text-gray-400 text-xs">无图片</span>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* 产品信息 */}
-                        <div className="flex-1 space-y-2">
-                          <div className="font-medium text-gray-900 line-clamp-2">
-                            {product.title || '无标题'}
-                          </div>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-gray-600">
-                            <div>
-                              <span className="font-medium">ASIN:</span> {product.asin}
-                            </div>
-                            <div>
-                              <span className="font-medium">价格:</span> ${product.price}
-                            </div>
-                            <div>
-                              <span className="font-medium">月销量:</span> {product.monthlySales}
-                            </div>
-                            <div>
-                              <span className="font-medium">评分:</span> {product.rating}
-                            </div>
-                            <div>
-                              <span className="font-medium">大类目:</span> {product.mainCategory}
-                            </div>
-                            <div>
-                              <span className="font-medium">小类目:</span> {product.subCategory}
-                            </div>
-                            <div>
-                              <span className="font-medium">配送:</span> {product.shippingMethod}
-                            </div>
-                            <div>
-                              <span className="font-medium">卖家地:</span> {product.sellerLocation}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                {products.length > 5 && (
-                  <div className="mt-4 text-center text-gray-500 text-sm">
-                    还有 {products.length - 5} 个产品未显示...
-                  </div>
-                )}
-              </div>
+            <div className="max-w-7xl mx-auto">
+              <ProductList products={products} itemsPerPage={20} />
             </div>
           )}
 
