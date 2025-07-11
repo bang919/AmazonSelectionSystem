@@ -1,0 +1,31 @@
+{
+    "mcpServers": {
+        "exa": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "exa-mcp-server"
+            ],
+            "env": {
+                "EXA_API_KEY": "29ca99b7-873c-4a9b-951c-c8c791670067"
+            }
+        },
+        "tavily": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "tavily-mcp"
+            ],
+            "env": {
+                "TAVILY_API_KEY": "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"
+            }
+        },
+        "sequential-thinking": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-sequential-thinking"
+            ]
+        }
+    }
+}

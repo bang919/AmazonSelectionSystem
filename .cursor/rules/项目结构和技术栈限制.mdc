@@ -1,0 +1,54 @@
+---
+description: 作用于：创建新文件、更改项目结构、选用技术栈
+alwaysApply: false
+---
+# 项目结构和技术栈限制
+
+## 项目类型
+- Web应用
+
+## 技术栈
+- Next.js
+- React
+- Firebase SDK
+- Tailwind CSS（可选）
+
+## 目录结构
+- `pages/`：存放页面组件
+- `components/`：存放可复用的UI组件
+- `styles/`：存放样式文件
+- `public/`：存放静态资源
+- `lib/`：存放工具函数和库
+- `hooks/`：存放自定义hooks
+- `context/`：存放React Context
+
+## 文件命名规范
+- 页面组件：PascalCase，例如 `HomePage.js`
+- UI组件：PascalCase，例如 `ProductCard.js`
+- 样式文件：kebab-case，例如 `global.css`
+- 工具函数：camelCase，例如 `parseExcel.js`
+
+## 编码规范
+- 使用函数式组件和hooks
+- 遵循React和Next.js的最佳实践
+- 使用ES6+语法
+- 代码缩进使用2个空格
+
+## 依赖管理
+- 使用npm或yarn管理依赖
+- 主要依赖：
+  - `next`
+  - `react`
+  - `react-dom`
+  - `firebase`
+  - `xlsx`
+  - `tailwindcss`（可选）
+
+## Firebase配置
+- 在 `lib/firebase.js` 中配置Firebase SDK
+- 使用环境变量存储Firebase配置信息
+
+## 其他要求
+- 使用TypeScript（可选）
+- 实现响应式设计
+- 优化性能，如懒加载、缓存等

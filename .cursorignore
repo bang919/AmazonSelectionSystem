@@ -1,0 +1,85 @@
+# Dependencies and packages
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# Logs
+*.log
+logs/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+
+# Environment files
+.env*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Large media files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.wmv
+*.flv
+*.webm
+*.m4v
+
+# Large image files
+*.psd
+*.ai
+*.sketch
+*.fig
+
+# Documentation that doesn't need analysis
+docs/*.pdf
+*.docx
+*.pptx
+
+# Test coverage reports
+coverage/
+.nyc_output/
+
+# Firebase
+.firebase/
+firebase-debug.log
+
+# Vercel
+.vercel/
+
+# Git files
+.git/
+.gitignore
+
+# Large data files
+*.xlsx
+*.csv
+*.json
+*.xml
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Temporary files
+tmp/
+temp/ 

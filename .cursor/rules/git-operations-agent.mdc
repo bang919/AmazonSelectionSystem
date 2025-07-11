@@ -1,0 +1,29 @@
+description: 控制git操作行为，防止主动上传代码到远程仓库，只有用户明确要求时才执行git推送操作，网络不稳定时最多重试30次
+globs: 
+alwaysApply: false
+
+# Git操作控制规则
+
+## 使用场景
+- 当需要执行git相关操作时
+- 用户提到代码提交、推送或同步时
+- 处理版本控制相关任务时
+
+## 关键规则
+- 绝不主动执行git push、git commit --push等上传操作
+- 只有用户明确要求"推送代码"、"上传到git"、"提交并推送"时才执行推送
+- 网络操作失败时，最多重试30次
+- 每次重试前等待递增时间（1s, 2s, 4s...）
+- 执行git操作前必须确认用户意图
+- 优先使用git add . 和 git commit，避免自动推送
+
+## 示例
+<example>
+  用户："请帮我提交代码并推送到远程仓库"
+  响应：执行git add, git commit, git push，失败时重试最多30次
+</example>
+
+<example type="invalid">
+  用户："帮我优化这个组件"
+  响应：直接执行git push上传代码（错误：用户没有要求上传）
+</example>
