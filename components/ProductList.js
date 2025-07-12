@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 
-const ProductList = ({ products, itemsPerPage = 10 }) => {
+const ProductList = ({ products, itemsPerPage = 20 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [displayedProducts, setDisplayedProducts] = useState([]);
   const [pageSize, setPageSize] = useState(itemsPerPage);
@@ -99,12 +99,11 @@ const ProductList = ({ products, itemsPerPage = 10 }) => {
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
               className="text-sm border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value={10}>10</option>
-              <option value={15}>15</option>
               <option value={20}>20</option>
-              <option value={25}>25</option>
-              <option value={30}>30</option>
               <option value={50}>50</option>
+              <option value={100}>100</option>
+              <option value={200}>200</option>
+              <option value={300}>300</option>
             </select>
           </div>
         </div>
