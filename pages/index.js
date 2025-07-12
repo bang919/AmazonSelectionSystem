@@ -3,6 +3,7 @@ import Head from 'next/head';
 import FileUpload from '../components/FileUpload';
 import ProductList from '../components/ProductList';
 import FilterPanel from '../components/FilterPanel';
+import BlacklistEditor from '../components/BlacklistEditor';
 import { getBatchCategoryBlacklistStatus, isProductBlacklisted } from '../lib/firebase';
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
   const [blacklistMap, setBlacklistMap] = useState({});
   const [isLoadingBlacklist, setIsLoadingBlacklist] = useState(false);
   const [error, setError] = useState('');
+  const [isBlacklistEditorOpen, setIsBlacklistEditorOpen] = useState(false);
 
   // 处理数据解析完成
   const handleDataParsed = async (parsedProducts) => {
@@ -249,6 +251,19 @@ export default function Home() {
             />
           </div>
 
+          {/* 编辑黑名单按钮 */}
+          <div className="mb-8 text-center">
+            <button
+              onClick={() => setIsBlacklistEditorOpen(true)}
+              className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              编辑黑名单
+            </button>
+          </div>
+
           {/* 错误提示 */}
           {error && (
             <div className="max-w-2xl mx-auto mb-6">
@@ -428,6 +443,12 @@ export default function Home() {
           )}
         </div>
       </main>
+
+      {/* 黑名单编辑器弹窗 */}
+      <BlacklistEditor
+        isOpen={isBlacklistEditorOpen}
+        onClose={() => setIsBlacklistEditorOpen(false)}
+      />
     </>
   );
 } 
