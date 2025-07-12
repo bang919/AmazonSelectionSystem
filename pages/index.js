@@ -88,6 +88,7 @@ export default function Home() {
       daysSinceLaunchRange: [Math.min(...daysSinceLaunchValues, 0), Math.max(...daysSinceLaunchValues, 365)],
       shippingMethods: [],
       sellerLocations: [],
+      enableBlacklist: true, // 默认启用黑名单过滤
     };
 
     setFilters(defaultFilters);
@@ -180,8 +181,8 @@ export default function Home() {
         }
       }
 
-      // 类目黑名单筛选
-      if (isProductBlacklisted(product, blacklist)) {
+      // 类目黑名单筛选 - 只有启用时才应用
+      if (filterConditions.enableBlacklist && isProductBlacklisted(product, blacklist)) {
         return false;
       }
 
@@ -204,16 +205,20 @@ export default function Home() {
     const filteredCount = filteredProducts.length;
     const highRatingCount = filteredProducts.filter(p => p.rating >= 4.0).length;
     const highSalesCount = filteredProducts.filter(p => p.monthlySales >= 100).length;
+    
+    // 计算黑名单相关统计
     const blacklistedCount = products.filter(p => isProductBlacklisted(p, blacklistMap)).length;
+    const isBlacklistEnabled = filters.enableBlacklist !== false; // 默认启用
 
     return {
       total: totalProducts,
       filtered: filteredCount,
       highRating: highRatingCount,
       highSales: highSalesCount,
-      blacklisted: blacklistedCount
+      blacklisted: blacklistedCount,
+      isBlacklistEnabled
     };
-  }, [products, filteredProducts, blacklistMap]);
+  }, [products, filteredProducts, blacklistMap, filters.enableBlacklist]);
 
   return (
     <>
@@ -275,15 +280,33 @@ export default function Home() {
                   <h2 className="text-lg font-semibold text-gray-900">
                     数据统计
                   </h2>
-                  {isLoadingBlacklist && (
-                    <div className="flex items-center text-sm text-gray-600">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      正在加载类目黑名单...
-                    </div>
-                  )}
+                  <div className="flex items-center space-x-4">
+                    {stats.isBlacklistEnabled && (
+                      <div className="flex items-center text-sm text-green-600">
+                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        黑名单过滤已启用
+                      </div>
+                    )}
+                    {!stats.isBlacklistEnabled && (
+                      <div className="flex items-center text-sm text-orange-600">
+                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        黑名单过滤已禁用
+                      </div>
+                    )}
+                    {isLoadingBlacklist && (
+                      <div className="flex items-center text-sm text-gray-600">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        正在加载类目黑名单...
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   <div className="bg-blue-50 rounded-lg p-4">
@@ -307,7 +330,7 @@ export default function Home() {
                       {stats.highRating}
                     </div>
                     <div className="text-sm text-green-800">
-                      高评分产品 (≥4.0)
+                      高评分产品
                     </div>
                   </div>
                   <div className="bg-yellow-50 rounded-lg p-4">
@@ -315,15 +338,15 @@ export default function Home() {
                       {stats.highSales}
                     </div>
                     <div className="text-sm text-yellow-800">
-                      高销量产品 (≥100)
+                      高销量产品
                     </div>
                   </div>
-                  <div className="bg-red-50 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-red-600">
+                  <div className={`rounded-lg p-4 ${stats.isBlacklistEnabled ? 'bg-red-50' : 'bg-gray-50'}`}>
+                    <div className={`text-2xl font-bold ${stats.isBlacklistEnabled ? 'text-red-600' : 'text-gray-600'}`}>
                       {stats.blacklisted}
                     </div>
-                    <div className="text-sm text-red-800">
-                      黑名单产品
+                    <div className={`text-sm ${stats.isBlacklistEnabled ? 'text-red-800' : 'text-gray-800'}`}>
+                      {stats.isBlacklistEnabled ? '已过滤黑名单' : '黑名单产品'}
                     </div>
                   </div>
                 </div>

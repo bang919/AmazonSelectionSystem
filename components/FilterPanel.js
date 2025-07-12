@@ -11,6 +11,7 @@ const FilterPanel = React.memo(({ products, onFiltersChange, initialFilters = {}
     daysSinceLaunchRange: initialFilters.daysSinceLaunchRange || [0, 365],
     shippingMethods: initialFilters.shippingMethods || [],
     sellerLocations: initialFilters.sellerLocations || [],
+    enableBlacklist: initialFilters.enableBlacklist !== undefined ? initialFilters.enableBlacklist : true, // 默认启用黑名单
   });
 
   // 数据范围 - 从产品数据中计算
@@ -120,6 +121,7 @@ const FilterPanel = React.memo(({ products, onFiltersChange, initialFilters = {}
   const handleDaysSinceLaunchRangeChange = useCallback((range) => updateFilters('daysSinceLaunchRange', range), [updateFilters]);
   const handleShippingMethodsChange = useCallback((selected) => updateFilters('shippingMethods', selected), [updateFilters]);
   const handleSellerLocationsChange = useCallback((selected) => updateFilters('sellerLocations', selected), [updateFilters]);
+  const handleEnableBlacklistChange = useCallback((enabled) => updateFilters('enableBlacklist', enabled), [updateFilters]);
 
   // 重置筛选条件
   const resetFilters = useCallback(() => {
@@ -132,6 +134,7 @@ const FilterPanel = React.memo(({ products, onFiltersChange, initialFilters = {}
       daysSinceLaunchRange: [dataRanges.daysSinceLaunch.min, dataRanges.daysSinceLaunch.max],
       shippingMethods: [],
       sellerLocations: [],
+      enableBlacklist: true, // 重置时也启用黑名单
     };
     setFilters(resetFilters);
     onFiltersChange(resetFilters);
@@ -350,6 +353,32 @@ const FilterPanel = React.memo(({ products, onFiltersChange, initialFilters = {}
               onChange={handleSellerLocationsChange}
             />
           )}
+
+          {/* 黑名单过滤开关 */}
+          <div className="border border-gray-300 rounded-md p-4 bg-gray-50">
+            <div className="flex items-center justify-between">
+              <div>
+                <label htmlFor="enableBlacklist" className="text-sm font-medium text-gray-700">
+                  类目黑名单过滤
+                </label>
+                <p className="text-xs text-gray-500 mt-1">
+                  自动过滤Firebase黑名单中的类目
+                </p>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="enableBlacklist"
+                  checked={filters.enableBlacklist}
+                  onChange={(e) => handleEnableBlacklistChange(e.target.checked)}
+                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className={`ml-2 text-sm font-medium ${filters.enableBlacklist ? 'text-green-600' : 'text-gray-400'}`}>
+                  {filters.enableBlacklist ? '已启用' : '已禁用'}
+                </span>
+              </div>
+            </div>
+          </div>
 
           {/* 搜索按钮 */}
           <div className="pt-4">
