@@ -111,7 +111,7 @@ const ProductList = ({ products, itemsPerPage = 10 }) => {
       </div>
 
       {/* 产品卡片网格 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
         {displayedProducts.map((product, index) => (
           <ProductCard 
             key={`${product.asin}-${(currentPage - 1) * pageSize + index}`}

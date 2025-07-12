@@ -110,7 +110,7 @@ const ProductCard = ({ product, index }) => {
 
   return (
     <div className="product-card bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden">
-      <div className="p-3">
+      <div className="p-4">
         {/* 顶部：产品图片 */}
         <div className="w-full mb-3">
           <div 
