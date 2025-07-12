@@ -3,3 +3,4 @@ alwaysApply: true
 ---
 - 回答时使用中文
 - 在分析问题时，使用 sequential-thinking MCP，确保按部就班地推理
+- 不得主动提交git，只有用户要求时才能提交git，并且需要注意遵守git-operations-agent.mdc的规则
