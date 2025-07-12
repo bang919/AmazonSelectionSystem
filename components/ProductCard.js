@@ -1,8 +1,83 @@
+import { useState, useEffect } from 'react';
 import { calculateDaysSinceLaunch } from '../lib/parseExcel';
+import { getCategoryBlacklistStatus, updateCategoryBlacklistStatus, formatCategoryName } from '../lib/firebase';
 
 const ProductCard = ({ product, index }) => {
+  const [isBlacklisted, setIsBlacklisted] = useState(false);
+  const [isLoadingBlacklist, setIsLoadingBlacklist] = useState(false);
+  const [isUpdatingBlacklist, setIsUpdatingBlacklist] = useState(false);
+  
   // 计算上架至今天数
   const daysSinceLaunch = calculateDaysSinceLaunch(product.launchDate);
+
+  // 在组件加载时获取黑名单状态
+  useEffect(() => {
+    const loadBlacklistStatus = async () => {
+      if (product.subCategory) {
+        setIsLoadingBlacklist(true);
+        try {
+          const status = await getCategoryBlacklistStatus(product.subCategory);
+          setIsBlacklisted(status);
+        } catch (error) {
+          console.error('获取黑名单状态失败:', error);
+        } finally {
+          setIsLoadingBlacklist(false);
+        }
+      }
+    };
+
+    loadBlacklistStatus();
+  }, [product.subCategory]);
+
+  // 处理黑名单按钮点击
+  const handleBlacklistToggle = async (e) => {
+    e.stopPropagation();
+    
+    if (!product.subCategory) {
+      alert('小类目信息不完整，无法操作');
+      return;
+    }
+
+    setIsUpdatingBlacklist(true);
+    try {
+      const newStatus = !isBlacklisted;
+      const formattedCategory = formatCategoryName(product.subCategory);
+      
+      console.log('更新黑名单状态:', {
+        原始类目: product.subCategory,
+        格式化类目: formattedCategory,
+        新状态: newStatus
+      });
+
+      const success = await updateCategoryBlacklistStatus(formattedCategory, newStatus);
+      
+      if (success) {
+        setIsBlacklisted(newStatus);
+        
+        // 显示操作成功的提示
+        const action = newStatus ? '已添加到' : '已从';
+        const message = `${action}黑名单: ${product.subCategory}`;
+        
+        // 创建临时提示元素
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg z-50';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        // 3秒后移除提示
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 3000);
+      } else {
+        alert('操作失败，请重试');
+      }
+    } catch (error) {
+      console.error('更新黑名单状态失败:', error);
+      alert('操作失败: ' + error.message);
+    } finally {
+      setIsUpdatingBlacklist(false);
+    }
+  };
 
   // 处理商品页面跳转
   const handleProductClick = () => {
@@ -102,14 +177,47 @@ const ProductCard = ({ product, index }) => {
               {product.mainCategory || '未知'}
             </span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <span className="text-gray-500">小类目:</span>
-            <span 
-              className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-right"
-              onClick={handleSubCategoryClick}
-            >
-              {product.subCategory || '未知'}
-            </span>
+            <div className="flex items-center gap-2">
+              <span 
+                className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-right"
+                onClick={handleSubCategoryClick}
+              >
+                {product.subCategory || '未知'}
+              </span>
+              {/* 黑名单按钮 */}
+              <button
+                onClick={handleBlacklistToggle}
+                disabled={isLoadingBlacklist || isUpdatingBlacklist}
+                className={`
+                  flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold transition-colors
+                  ${isLoadingBlacklist || isUpdatingBlacklist 
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                    : isBlacklisted 
+                      ? 'bg-red-500 text-white hover:bg-red-600' 
+                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  }
+                `}
+                title={
+                  isLoadingBlacklist 
+                    ? '正在加载...' 
+                    : isUpdatingBlacklist 
+                      ? '正在更新...' 
+                      : isBlacklisted 
+                        ? '点击移出黑名单' 
+                        : '点击加入黑名单'
+                }
+              >
+                {isLoadingBlacklist || isUpdatingBlacklist ? (
+                  <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                ) : isBlacklisted ? (
+                  '−'
+                ) : (
+                  '+'
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
